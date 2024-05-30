@@ -70,8 +70,10 @@ static void exynos_irq_mask(struct irq_data *irqd)
 #ifdef CONFIG_SOC_EXYNOS9820_EVT0
 	if (!strncmp(bank->name, "gpp3", 4) && (irqd->hwirq == 4))
 		return ;
+#elif CONFIG_SOC_EXYNOS8895
+	if (!strncmp(bank->name, "gpb1", 4) && (irqd->hwirq == 3))
+		return;
 #endif
-
 	spin_lock_irqsave(&bank->slock, flags);
 
 	mask = readl(bank->eint_base + reg_mask);
@@ -376,6 +378,9 @@ int exynos_eint_gpio_init(struct samsung_pinctrl_drv_data *d)
 
 #ifdef CONFIG_SOC_EXYNOS9820_EVT0
 		if (!strncmp(bank->name, "gpp3", 4))
+			smpl_irq = d->irq;
+#elif CONFIG_SOC_EXYNOS8895
+		if (!strncmp(bank->name, "gpb1", 4))
 			smpl_irq = d->irq;
 #endif
 	}

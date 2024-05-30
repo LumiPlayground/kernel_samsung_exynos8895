@@ -1441,6 +1441,8 @@ static const struct of_device_id samsung_pinctrl_dt_match[] = {
 		.data = &exynos5433_of_data },
 	{ .compatible = "samsung,exynos7-pinctrl",
 		.data = &exynos7_of_data },
+	{ .compatible = "samsung,exynos8895-pinctrl",
+		.data = &exynos8895_of_data },
 	{ .compatible = "samsung,exynos9810-pinctrl",
 		.data = &exynos9810_of_data },
 	{ .compatible = "samsung,exynos9820-pinctrl",
@@ -1716,6 +1718,19 @@ static void check_gpio_status(unsigned char phonestate, const char *skip_grps)
 	}
 }
 
+int exynos8895_secgpio_get_nr_gpio(void)
+{
+	int i, j;
+	int nr_gpio = 0;
+
+	for (i = 0; i < ARRAY_SIZE(exynos8895_pin_ctrl); i++) {
+		for(j = 0; j < exynos8895_pin_ctrl[i].nr_banks; j++)
+			nr_gpio += exynos8895_pin_ctrl[i].pin_banks[j].nr_pins;
+	}
+
+	return nr_gpio;
+}
+
 static int __init exynos9820_secgpio_get_nr_gpio(void)
 {
 	unsigned int i, j;
@@ -1730,6 +1745,12 @@ static int __init exynos9820_secgpio_get_nr_gpio(void)
 
 	return nr_gpio;
 }
+
+struct struct gpio_dvs_t exynos8895_secgpio_dvs = {
+	.result = &gpiomap_result,
+	.check_gpio_status = check_gpio_status,
+	.get_nr_gpio = exynos8895_secgpio_get_nr_gpio,
+};
 
 static struct gpio_dvs_t exynos9820_secgpio_dvs = {
 	.result = &gpiomap_result,
