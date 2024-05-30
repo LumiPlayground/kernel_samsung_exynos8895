@@ -20,6 +20,7 @@ obj-$(CONFIG_ARCH_S5PV210)	+= clk-s5pv210.o clk-s5pv210-audss.o
 
 ifeq ($(CONFIG_COMPOSITE_CLK_SAMSUNG), y)
 	obj-y                           += composite.o
+	obj-$(CONFIG_SOC_EXYNOS8895)	+= clk-exynos8895.o
 	obj-$(CONFIG_SOC_EXYNOS9810)	+= clk-exynos9810.o
 ifeq ($(CONFIG_SOC_EXYNOS9820_EVT0), y)
 	obj-$(CONFIG_SOC_EXYNOS9820_EVT0) += clk-exynos9820_evt0.o
