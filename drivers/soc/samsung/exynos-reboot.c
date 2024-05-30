@@ -348,6 +348,13 @@ static void exynos_reboot(enum reboot_mode mode, const char *cmd)
 	revision = exynos_soc_info.revision;
 	pr_info("SOC ID %X. Revision: %x\n", soc_id, revision);
 	switch(soc_id) {
+	case EXYNOS8895_SOC_ID:
+		/* Check reset_sequencer_configuration register */
+		if (readl(exynos_pmu_base + EXYNOS_PMU_RESET_SEQUENCER_CONFIGURATION) & DFD_EDPCSR_DUMP_EN) {
+			mngs_reset_control(0);
+			dfd_set_dump_gpr(0);
+		}
+		break;
 	case EXYNOS9810_SOC_ID:
 		/* Check reset_sequencer_configuration register */
 		exynos_pmu_read(RESET_SEQUENCER_CONFIGURATION, &reg_val);
