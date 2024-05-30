@@ -25,11 +25,11 @@
 #include <soc/samsung/cal-if.h>
 #include <soc/samsung/exynos-dm.h>
 #include <soc/samsung/ect_parser.h>
+#include <soc/samsung/exynos-earlytmu.h>
 #include <soc/samsung/exynos-cpuhp.h>
 #include <soc/samsung/exynos-cpupm.h>
 #include <soc/samsung/exynos-emc.h>
 #include <soc/samsung/exynos-alt.h>
-
 #include "exynos-acme.h"
 
 /*
@@ -1123,6 +1123,28 @@ static __init void set_boot_qos(struct exynos_cpufreq_domain *domain)
 	boot_qos = domain->max_freq;
 	if (!of_property_read_u32(dn, "pm_qos-booting", &val))
 		boot_qos = min(boot_qos, val);
+
+	/*
+	 * Before setting booting pm_qos, ACME driver check thermal condition.
+	 * If necessary, booting pm_qos should be set to frequency
+	 * that considering thermal condition.
+	 * exynos_earlytmu_get_boot_freq function return this frequency.
+	 * 	1. return > 0	: booting pm_qos should be set lower than return value
+	 *	2. return == 0	: booting pm_qos should be set to min_freq of domain
+	 *	3. return < 0	: don't need to apply thermal condition
+	 */
+	freq = exynos_earlytmu_get_boot_freq(domain->id);
+	if (freq >= 0) {
+		/*
+		 * Back up boot_qos value for reset booting pm_qos
+		 * after thermal-throttling is enabled.
+		 */
+		domain->boot_qos = boot_qos;
+
+		val = (unsigned int)freq;
+		val = max(val, domain->min_freq);
+		boot_qos = min(val, boot_qos);
+	}
 
 	pm_qos_update_request_timeout(&domain->min_qos_req,
 			boot_qos, 40 * USEC_PER_SEC);

@@ -171,6 +171,12 @@ config EXYNOS_DVFS_MANAGER
 	  Enable DVFS Manager for Exynos SoC.
 	  This module controls constraint between each DVFS domains.
 
+config EXYNOS_EARLY_TMU
+	bool "Exynos Early TMU"
+	default n
+	help
+	  Enable Exynos Early TMU for Exynos SoC.
+
 config EXYNOS_SDM
 	bool "Exynos Security Dump Manager Support"
 	depends on DEBUG_SNAPSHOT
