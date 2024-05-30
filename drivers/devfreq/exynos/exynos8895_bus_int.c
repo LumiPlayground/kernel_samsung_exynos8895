@@ -26,7 +26,7 @@
 #include <soc/samsung/cal-if.h>
 #include "../governor.h"
 
-#include "exynos_ppmu.h"
+#include "exynos_ppc.h"
 
 static unsigned long origin_suspend_freq = 0;
 
@@ -186,22 +186,22 @@ static int exynos8895_devfreq_int_init_freq_table(struct exynos_devfreq_data *da
 
 static int exynos8895_devfreq_int_get_status(struct exynos_devfreq_data *data)
 {
-#ifdef CONFIG_EXYNOS_WD_DVFS
+#ifdef CONFIG_EXYNOS_ALT_DVFS
 	int i;
-	struct ppmu_data ppmu = { 0, };
+	struct ppc_data ppc = { 0, };
 	u64 max = 0;
 
 	for (i = 0; i < data->um_data.um_count; i++)
-		exynos_reset_ppmu(data->um_data.va_base[i],
+		exynos_reset_ppc(data->um_data.va_base[i],
 				  data->um_data.channel[i]);
 
 	for (i = 0; i < data->um_data.um_count; i++) {
-		exynos_read_ppmu(&ppmu, data->um_data.va_base[i],
+		exynos_read_ppc(&ppc, data->um_data.va_base[i],
 				 data->um_data.channel[i]);
-		if (max < ppmu.pmcnt2)
-			max = ppmu.pmcnt2;
-		if (max < ppmu.pmcnt3)
-			max = ppmu.pmcnt3;
+		if (max < ppc.pmcnt2)
+			max = ppc.pmcnt2;
+		if (max < ppc.pmcnt3)
+			max = ppc.pmcnt3;
 	}
 	data->um_data.val_pmcnt = max;
 	data->um_data.val_ccnt = (((u64)data->last_monitor_period) *

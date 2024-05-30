@@ -36,7 +36,7 @@
 #include <soc/samsung/ect_parser.h>
 #include "../../soc/samsung/acpm/acpm.h"
 #include "../../soc/samsung/acpm/acpm_ipc.h"
-#include "exynos_ppmu.h"
+#include "exynos_ppc.h"
 
 #define INT	0
 
@@ -316,15 +316,15 @@ static int exynos8895_devfreq_mif_init_freq_table(struct exynos_devfreq_data *da
 
 static int exynos8895_devfreq_mif_um_register(struct exynos_devfreq_data *data)
 {
-#ifdef CONFIG_EXYNOS_WD_DVFS
+#ifdef CONFIG_EXYNOS_ALT_DVFS
 	int i;
 	if (data->use_get_dev) {
 		for (i = 0; i < data->um_data.um_count; i++)
-			exynos_init_ppmu(data->um_data.va_base[i],
+			exynos_init_ppc(data->um_data.va_base[i],
 					 data->um_data.mask_v[i],
 					 data->um_data.mask_a[i]);
 		for (i = 0; i < data->um_data.um_count; i++)
-			exynos_start_ppmu(data->um_data.va_base[i]);
+			exynos_start_ppc(data->um_data.va_base[i]);
 	}
 #endif
 	return 0;
@@ -332,11 +332,11 @@ static int exynos8895_devfreq_mif_um_register(struct exynos_devfreq_data *data)
 
 static int exynos8895_devfreq_mif_um_unregister(struct exynos_devfreq_data *data)
 {
-#ifdef CONFIG_EXYNOS_WD_DVFS
+#ifdef CONFIG_EXYNOS_ALT_DVFS
 	int i;
 	if (data->use_get_dev) {
 		for (i = 0; i < data->um_data.um_count; i++)
-			exynos_exit_ppmu(data->um_data.va_base[i]);
+			exynos_exit_ppc(data->um_data.va_base[i]);
 	}
 #endif
 	return 0;
@@ -344,24 +344,24 @@ static int exynos8895_devfreq_mif_um_unregister(struct exynos_devfreq_data *data
 
 static int exynos8895_devfreq_mif_get_status(struct exynos_devfreq_data *data)
 {
-#ifdef CONFIG_EXYNOS_WD_DVFS
+#ifdef CONFIG_EXYNOS_ALT_DVFS
 	int i;
-	struct ppmu_data ppmu = { 0, };
+	struct ppc_data ppc = { 0, };
 	u64 max = 0;
 
 	for (i = 0; i < data->um_data.um_count; i++)
-		exynos_reset_ppmu(data->um_data.va_base[i],
+		exynos_reset_ppc(data->um_data.va_base[i],
 				  data->um_data.channel[i]);
 
 	for (i = 0; i < data->um_data.um_count; i++) {
-		exynos_read_ppmu(&ppmu, data->um_data.va_base[i],
+		exynos_read_ppc(&ppc, data->um_data.va_base[i],
 				 data->um_data.channel[i]);
 		if (!i)
-			data->um_data.val_ccnt = ppmu.ccnt;
-		if (max < ppmu.pmcnt0)
-			max = ppmu.pmcnt0;
-		if (max < ppmu.pmcnt1)
-			max = ppmu.pmcnt1;
+			data->um_data.val_ccnt = ppc.ccnt;
+		if (max < ppc.pmcnt0)
+			max = ppc.pmcnt0;
+		if (max < ppc.pmcnt1)
+			max = ppc.pmcnt1;
 	}
 	data->um_data.val_pmcnt = max;
 #endif
