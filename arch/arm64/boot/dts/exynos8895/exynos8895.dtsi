@@ -185,7 +185,7 @@
 			enable-method = "psci";
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
 			#cooling-cells = <2>; /* min followed by max */
-			current = <60240 40410 27260 20180 16850 13710 10710 8290 6060>;
+			sched-energy-data = <&A53_ENERGY>;
 		};
 		cpu@101 {
 			device_type = "cpu";
@@ -193,7 +193,7 @@
 			reg = <0x0 0x101>;
 			enable-method = "psci";
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
-			current = <60240 40410 27260 20180 16850 13710 10710 8290 6060>;
+			sched-energy-data = <&A53_ENERGY>;
 		};
 		cpu@102 {
 			device_type = "cpu";
@@ -201,7 +201,7 @@
 			reg = <0x0 0x102>;
 			enable-method = "psci";
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
-			current = <60240 40410 27260 20180 16850 13710 10710 8290 6060>;
+			sched-energy-data = <&A53_ENERGY>;
 		};
 		cpu@103 {
 			device_type = "cpu";
@@ -209,7 +209,7 @@
 			reg = <0x0 0x103>;
 			enable-method = "psci";
 			cpu-idle-states = <&BOOTCL_CPU_SLEEP>;
-			current = <60240 40410 27260 20180 16850 13710 10710 8290 6060>;
+			sched-energy-data = <&A53_ENERGY>;
 		};
 		cpu4: cpu@0 {
 			device_type = "cpu";
@@ -218,7 +218,7 @@
 			enable-method = "psci";
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
 			#cooling-cells = <2>; /* min followed by max */
-			current = <355850 295970 251060 233620 201350 177320 137850 111850 100000 88090 78470 69380 58880>;
+			sched-energy-data = <&MONGOOSE_ENERGY>;
 		};
 		cpu@1 {
 			device_type = "cpu";
@@ -226,7 +226,7 @@
 			reg = <0x0 0x1>;
 			enable-method = "psci";
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
-			current = <355850 295970 251060 233620 201350 177320 137850 111850 100000 88090 78470 69380 58880>;
+			sched-energy-data = <&MONGOOSE_ENERGY>;
 		};
 		cpu@2 {
 			device_type = "cpu";
@@ -234,7 +234,7 @@
 			reg = <0x0 0x2>;
 			enable-method = "psci";
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
-			current = <355850 295970 251060 233620 201350 177320 137850 111850 100000 88090 78470 69380 58880>;
+			sched-energy-data = <&MONGOOSE_ENERGY>;
 		};
 		cpu@3 {
 			device_type = "cpu";
@@ -242,7 +242,7 @@
 			reg = <0x0 0x3>;
 			enable-method = "psci";
 			cpu-idle-states = <&NONBOOTCL_CPU_SLEEP>;
-			current = <355850 295970 251060 233620 201350 177320 137850 111850 100000 88090 78470 69380 58880>;
+			sched-energy-data = <&MONGOOSE_ENERGY>;
 		};
 
 		idle-states {
@@ -266,6 +266,20 @@
 				exit-latency-us = <75>;
 				min-residency-us = <2000>;
 				status = "okay";
+			};
+		};
+
+		energy-data {
+			A53_ENERGY: a53-energy {
+				mips-per-mhz = <230>;
+				power-coefficient = <106>;
+				static-power-coefficient = <18>;
+			};
+
+			MONGOOSE_ENERGY: mongoose-energy {
+				mips-per-mhz = <380>;
+				power-coefficient = <334>;
+				static-power-coefficient = <43>;
 			};
 		};
 	};
